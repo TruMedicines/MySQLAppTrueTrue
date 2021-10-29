@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+
+
+<body>
+    {% block wrapper %}
+    <video id="video" preload="none" width="50%" height="50%">
+        <source src="{{vid}}" type="video/mp4">
+    </video>
+
+
+    <script>
+        //ignore this
+        function httpGetAsync(url, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+                }
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send(null)
+        }
+        
+        //ignore this
+        function callResponse() {
+            console.log("do nothing")
+        }
+
+        const video = document.querySelector('video');
+
+        video.load();    
+        
+        video.addEventListener('canplaythrough', () => {
+            video.play();
+        });  
+
+        video.onended = (event) => {
+            window.location.href = "/"
+        };
+        
+    </script>
+    {% endblock %}
+
+</body>
+</html>
+
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Data Dashboard</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width-device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="/static/style.css? + '{{time}}">
+</head>
+<body>
+    <h1> Multiple User Portal </h1>
+    <div class="container mb-5 mt-3">
+            <table id="mydatatable" class="table table-bordered table-striped mydatatable" style="width: 100%">
+                <thead>
+                    <tr>
+                            
+                        <td> Last Name </td>
+                        <td> First Name </td>
+                        <td> Adherence Status </td>
+                        
+                    </tr>  
+                </thead>
+                <tbody>
+                    {% for row in list %}
+                        <tr>
+                            {% for cell in row%}
+                                {% if cell == 'Dispense' %} 
+                                    <td> <img src="{{'static/ok.png?'}}" width=48> </td>
+                                {% elif cell == 'Warning' %}
+                                    <td> <img src="{{'static/warning.png?'}}" width=48> </td>
+                                {% elif cell == '' %}
+                                    <td> <img src="{{'static/warning.png?'}}" width=48> </td>
+                                {% else %}
+                                    <td><a href='adminPortal/{{cell.user_id}}'>{{cell.lastName}}</a></td> 
+                                    <td><a href='adminPortal/{{cell.user_id}}'>{{cell.firstName}}</a>   </td> 
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %} 
+                </tbody>
+                
+            </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script scr="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script scr="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script scr="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $('.mydatatable').DataTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+{% extends "base.html" %} <!--Uses the base.html document as a basic template-->
+                          <!--Information outside of the Jinja Blocks will not be used-->
+<html>
+    
+    
+<head>
+    {% block script %}
+
+    <script>
+        function check() {
+            var timeTakePills = '{{pillBtn}}';
+            var flag = (timeTakePills == 'True');
+            var element = document.getElementById("takePillsBtn");
+            if (flag) {
+                element.setAttribute("href");
+            } else {
+                element.removeAttribute("href");
+                element.style.color = 'grey';
+            }
+        }
+        
+        // JS Func to call ws
+        
+        function httpGet(url) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", url, false)
+            xmlHttp.send(null)
+            return xmlHttp.responseText;
+        }
+        
+        function httpGetAsync(url, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+                }
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send(null)
+        }
+        
+        function callResponse(input) {
+            //console.log(input)
+            jsonDB = JSON.parse(input)
+            if (jsonDB.command == "nextmeds") {
+                console.log("new page")
+                document.location.href = "/responseOne"
+            } else if (jsonDB.command == "symptoms") {
+                document.location.href = "/noteTaker"
+            } else {
+                console.log("do nothing")
+            }
+        }
+        </script>
+    
+    {% endblock %}
+</head>
+
+<!--Not shown here there is the onload function timeClock() that can be found in base.html that runs on this page-->
+<body>
+
+    {% block wrapper %}
+
+    <h3>Your next reminder time is: {{dispenseTime}}</h3> <!--Show the reminder time for the given patient-->
+    <h2>{{date}}</h2>
+
+    <!--Create an empty div for the clock that will be populated when the timeClock() function runs-->
+    <div id='clock' style="font-size: 40px"></div> 
+
+    <!--This is the button that opens the popup for testing-->
+    <button data-popup-target="#popup">Open Popup</button> 
+    <div class="top_box">
+        <a href="/avatarview" id="takePillsBtn">
+            <div class="box" >
+
+                <i class="fas fa-user-md fa-5x"></i>
+                <h2>View Avatar Message</h2>
+            </div>
+
+        </a>
+    </div>
+
+    <div class="main_boxes">
+        <a href="/adminPortal">
+            <div class="box">
+
+                <i class="fas fa-search fa-4x"></i>
+                <h3>Admin Portal</h3>
+            </div>
+        </a>
+
+        <a href="/avatarselect">
+            <div class="box">
+
+                <i class="fas fa-user-edit fa-4x"></i>
+                <h3>Edit Avatar</h3>
+            </div>
+        </a>
+
+        <a href="/user">
+            <div class="box">
+
+                <i class="fas fa-cog fa-4x"></i>
+                <h3>User Profile</h3>
+            </div>
+        </a>
+
+        <a href="/dispense">
+            <div class="box">
+
+                <i class="fas fa-tablets fa-4x"></i>
+                <h3>Pill Dispensery</h3>
+            </div>
+        </a>
+
+        <a href="/algorithmia">
+            <div class="box">
+
+                <i class="fas fa-user-edit fa-4x"></i>
+                <h3>Create Avatar Message</h3>
+            </div>
+        </a>
+
+        <a href="/demo">
+            <div class="box">
+
+                <i class="fas fa-user-edit fa-4x"></i>
+                <h3>Demo</h3>
+            </div>
+        </a>
+
+    </div>
+
+    <div class="main-container">
+        <!--This is the div for popup-->
+        <div class="popup" id="popup">
+            <div class="popup-header">
+                <!--this is a button that closes the popup &times; is the code for the x symbol -->
+                <div data-close-button class="close-button active">&times;</div>
+            </div>
+            <div class="popup-body">
+                Ready to Take Your Medications? <br>
+
+                
+                <div class="loader inactive" id="loader"></div>
+                <!--The video poster is the static image of the avatar Amy. Currently this is static,-->
+                <!--but should be used based on the avatar for the given user-->
+                <video id="video" class="video active" poster="/static/Amy.png" preload="none" width="70%" >
+                    <!--This is the demovideo which is paused until the popup opens-->
+                    <source src="/static/demovid.mp4" type="video/mp4"> 
+                </video>
+                
+                <br>
+                <!--This is the image of the pill pack to be viewed by the user, it is initially hidden-->
+                <img id="pill" class="image" src="{{ 'static/nextDose.jpg?' + time }}" width="50%" height="50%"> 
+                <br>
+                <!--This is the confirmation button, for the user to confirm they want their pills dispensed-->
+                <!--Once pressed the machine will analyze the packs-->
+                <button confirmation-button id="confirm" class="close-button active">Yes</button>
+                <!--This is the deny confirmation button, for the user to say they dont want their pills dispensed-->
+                <!--If pressed it will just hide the yes and no buttons but not do anything else-->
+                <button confirmation-button id="deny" class="close-button active">No</button>
+                
+                <br>
+
+                <!--This is the dispense button, for the user to confirm that their pills look correct-->
+                <!--Once pressed this button will dispense the pack-->
+                <button dispense-button id="dispense" class="close-button">Dispense</button>
+                <!--This is the dont dispense button, for the user to say that their pills dont look correct-->
+                <!--If pressed it will(Needs development)-->
+                <button dispense-button id="dontDispense" class="close-button">Don't Dispense</button>
+            </div>
+        </div>
+
+        <!--This is the overlay that will darken the background when the popup is active-->
+        <div id="overlay"></div> 
+        <br>
+        <!--This is the recording of the user taking their medication which will show after everything else has finished-->
+        <video class="recording" id="recording" width="100%">
+            <source src="{{ '/static/webcam.mp4?' + time }}" type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+
+        
+        document.documentElement.requestFullscreen().catch((e) => {
+            console.log(e);
+        });
+        
+
+        //Define the avatar video, and the recording of the user as constants. 
+        const video = document.getElementById('video');
+        const recording = document.getElementById('recording')
+
+        //Load the video but don't begin playing it yet
+        video.load();
+
+        //Define all the button that open the popup as constants
+        const openpopupButtons = document.querySelectorAll('[data-popup-target]')
+
+        //Define all the buttons that close the popup as constants
+        const closepopupButtons = document.querySelectorAll('[data-close-button]')
+
+        //Define the button that confirms the user is ready to have their pills dispensed as constants
+        const confirmationButtons = document.querySelectorAll('[confirmation-button]')
+
+        //Define the button that will dispense the pack and confirm that it looks good as constants
+        const dispenseButtons = document.querySelectorAll('[dispense-button]')
+
+        //Define the overlay as a constant
+        const overlay = document.getElementById('overlay')
+
+        //Define the notification sound as a constant
+        const music = new Audio('/static/pristine.mp3')
+
+        //Define the picture of the pill as a constant
+        const pic = document.getElementById('pill')
+
+        //Define the yes button as a constant
+        const yesButton = document.getElementById('confirm')
+
+        //Define the no button as a constant
+        const noButton = document.getElementById('deny')
+
+        //Define the dispense button as a constant
+        const dispense = document.getElementById('dispense')
+        
+        //Define the dont dispense button as a constant
+        const dontDispense = document.getElementById('dontDispense')
+
+        //Define the loader circle as a constant
+        const loader = document.getElementById('loader')
+        
+
+        //When an openpopupButton is clicked, find the popup/define it. And then run openpopup() on it
+        //Open popup will bring it up, and darken the background
+        openpopupButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const popup = document.querySelector(button.dataset.popupTarget)
+                openpopup(popup)
+            })
+        })
+
+        //When a closepopupButton is clicked, find the closest popup and then close it
+        closepopupButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const popup = button.closest('.popup')
+                closepopup(popup)
+            })
+        })
+
+        //When the yes button is clicked, run the prepareDispense() function and then make the yes and no buttons disappear. 
+        yesButton.addEventListener('click', () => {
+            prepareDispense()
+            removeActive(yesButton)
+            removeActive(noButton)
+        })
+
+        //When the no button is clicked make the yes and no buttons disappear. 
+        noButton.addEventListener('click', () => {
+            notReady()
+            removeActive(yesButton)
+            removeActive(noButton)
+        })
+
+        //When the dispense button is clicked, make the dispense button, don't dispense button, and pack image disappear.
+        //Then run dispensePack() for the popup
+        dispense.addEventListener('click', () => {
+            removeActive(dispense)
+            removeActive(dontDispense)
+            removeActive(pic)
+            const popup = dispense.closest('.popup')
+            dispensePack(popup)
+            
+        })
+
+        dontDispense.addEventListener('click', () => {
+            removeActive(dispense)
+            removeActive(dontDispense)
+            removeActive(pic)
+            noDispense()
+        })
+
+        //this is the function that displays the current time
+        function timeClock(loadTime){
+            //create a new Date
+            var rtClock = new Date();
+
+            //get the hours, minutes, and seconds for the time
+            var hours = rtClock.getHours();
+            var minutes = rtClock.getMinutes();
+            var seconds = rtClock.getSeconds();
+
+            //if the hours are less than 12 make it so that it is AM. If the hours are 12 or greater make it so that it is PM
+            var amPm = (hours < 12 ) ? "AM" : "PM" ;
+
+            //if the hours are greater than 12 subtract 12 from it to get it out of military time
+            //hours = (hours > 12) ? hours - 12 : hours;
+
+            //add leading zeros to hours, minutes, and seconds to get them to 2 units
+            hours = ("0" + hours).slice(-2);
+            minutes = ("0" + minutes).slice(-2);
+            seconds = ("0" + seconds).slice(-2); 
+
+            //finally concatonate all the times together into 1 string
+            var time = hours + ":" + minutes + ":" + seconds;
+
+            //Once the time string has been made place the string inside of the Clock element. 
+            document.getElementById('clock').innerHTML = time;
+        
+            //setTimeout will repeatedly run the timeClock() function every 500 ms. Which is the current function.
+            //Only if the loadTime equals the current time will the function stop running, and then the popup will be opened. 
+            var t = setTimeout(function() { timeClock(loadTime)}, 500); //code was var t = setTimeout(timeclock, 500) but this 
+            // doesn't allow for the passing of the loadTime parameter. By writing it as it is, we can pass the parameter
+
+
+            if(loadTime == time) {
+                //The clock will stop updating once the current time equals the load time
+                clearTimeout(t);
+                var popup = document.getElementById('popup');
+                openpopup(popup);
+            }
+            
+        }
+
+        //openpopup() will bring up the popup and begin the video process
+        function openpopup(popup) {
+            if (popup == null) return //If the function happens to have no popup passed to it, return out of the function
+            playNotification(); //Play the notifcation noise to alert the user that a pill is being dispensed
+            addActive(popup)
+            addActive(overlay)
+            video.play(); //Begin playing the video once the popup is open
+            checkTime(video, 1); //After the first message in the video has played, pause the video
+        }
+
+        //closepopup() will close the popup and remove the dark overlay
+        function closepopup(popup) {
+            if (popup == null) return //If the function happens to have no popup passed to it, return out of the function
+            removeActive(popup)
+            removeActive(overlay)
+        }
+
+        //playNotification() will play the notification noise
+        function playNotification() {
+            music.play()
+        }
+
+        //general remove active function
+        function removeActive(object) {
+            object.classList.remove('active')
+        }
+
+        //general add active function
+        function addActive(object) {
+            object.classList.add('active')
+        }
+
+        //prepareDispense() will hide the confirm button and then resume the video
+        function prepareDispense() {
+            //var video = document.getElementById('video')
+            video.currentTime = 9.25 //resume the video asking the user if the pill looks correct
+            video.play(); //resume playing the video
+            pic.src = pic.src.split("?")[0] + "?" + new Date().getTime(); //Update the picture of the pill to be the most recent
+            addActive(pic) //add the active class to the picture of the pill to bring up the photo 
+            checkTime(video,3); //pause the video once the 3rd message has been played
+            addActive(dispense) //add the active class to the dispense button to bring it up
+            addActive(dontDispense) //add the active class to the donDispense button to pull it up
+        }
+
+        //notReady() will log that the user doesnt want to have their pills dispensed and play a response
+        function notReady() {
+            video.currentTime = 20 //resume the video at the begining of the not ready clip
+            video.play();
+            logAdherence("Not Ready")
+
+        }
+
+        //noDispense will log that the user said their medications are incorrect
+        function noDispense() {
+            video.currentTime = 30 //resume the video at the begining of the dont dispense clip
+            video.play();
+            logAdherence("Incorrect Image")
+        }
+
+        //timedOut() will log that the user did not interact with the machine during their dispense time. 
+        function timedOut() {
+            video.currentTime = 40 //resume the video at the begining of the timeout clip
+            video.play();
+            logAdherence("Timed Out")
+        }
+
+        function logAdherence(error) {
+            fetch('/dispenseDemo', {
+
+            // Declare what type of data we're sending
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            // Specify the method
+            method: 'POST',
+
+            // A JSON payload
+            body: JSON.stringify(error)
+            })
+        } 
+
+        //checktime() will check what time the video is currently at, and determine whether it should pause it or not, based
+        //on what message is being played
+        function checkTime(video, count) {
+            if (count == 1) {
+                if (video.currentTime >= 6.8) { //6.8 seconds is the end of the first message
+                    video.pause();
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 2) {
+                if (video.currentTime >= 9.25) { //9.25 seconds is the end of the second message
+                    //video.pause();
+                    //removeActive(video)
+                    //addActive(loader)
+                    //loader.classList.remove("inactive")
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 3) {
+                if (video.currentTime >= 11) { //11 seconds is the end of the third message
+                    video.pause();
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 4) {
+                if (video.currentTime >= 14) { //14 seconds is the end of the forth message
+                    video.pause();
+                    removeActive(video)
+                    addActive(loader)
+                    loader.classList.remove("inactive")
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 5) {
+                if (video.currentTime >= 16.5) { //16.5 seconds is the end of the fifth message
+                    video.pause();
+                    removeActive(video)
+                    addActive(loader)
+                    loader.classList.remove("inactive")
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            }
+            
+        }
+
+        function dispensePack(popup) {
+            var vid = document.getElementById('video');
+            vid.play();
+            checkTime(vid, 4);
+
+            fetch('/dispenseDemo', {
+
+            // Declare what type of data we're sending
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            // Specify the method
+            method: 'POST',
+
+            // A JSON payload
+            body: JSON.stringify("Dispense")
+            })
+            .then(function () {
+                addActive(video)
+                removeActive(loader)
+                loader.classList.add("inactive")
+                vid.play();
+                checkTime(vid, 5);
+                fetch('/record', {
+
+                // Declare what type of data we're sending
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                // Specify the method
+                method: 'POST',
+
+                // A JSON payload
+                body: JSON.stringify("Recording")
+                })
+                .then(function () {
+                    addActive(video)
+                    removeActive(loader)
+                    loader.classList.add("inactive")
+                    vid.play();
+                    setTimeout(function() { closepopup(popup)}, 7000);
+                    addActive(recording);
+                    recording.load();
+                    recording.play();
+
+                    //Fetch calls a python function while keeping the website on the same page, and let javascript run
+                    //This fetches the viewNextPacket route which will run the dispenser.anaylzeNextPacket code
+                    fetch('/viewNextPacket', {
+
+                    // Declare what type of data we're sending
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    // Specify the method
+                    method: 'POST',
+
+                    // A JSON payload with a message that will be printed
+                    body: JSON.stringify("View Next Packet")
+                    })
+                })
+                
+                
+            })
+        }
+        
+    </script>
+    {% endblock %}
+</body>
+
+</html>

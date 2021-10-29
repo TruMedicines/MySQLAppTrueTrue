@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+    {% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    
+
+    <div style="float:right; width:50%"> 
+
+        <div style="width: 450px; font-size: 20px;">Patient Profile Picture:<span style="display:inline-block; width: 65px;"></span>Avatar:</div>
+        <img src="{{ 'static/oldLady.jpg?' + time }}" alt="Profile Pic Of User" height=200px> <span style="display:inline-block; width: 50px;"></span>
+        <img src="{{'file:/home/pi/MySQLApp/static/' + avatar + '.png'}}" alt="Picture of Avatar" height=200px> <br>
+        <img src="https://api.time.com/wp-content/uploads/2021/06/Pills.jpg" alt="Picture of Avatar" height=200px> <br>
+
+        
+        <div style="width: 450px; font-size: 16px;">Current Patient: {{ firstName }} {{ lastName }}<span style="display:inline-block; width: 65px;"></span>Avatar Name: {{ avatar }}</div>
+        
+        {{ call_form.hidden_tag() }}
+        <a href="{{ url_for('calling')}}">
+            {{ call_form.callSubmit() }}
+        </a>
+
+        <h5>Patient Notes</h5>
+        <table>
+            <tr>
+                <td>
+                    {{ notes | safe}}
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <h1>Admin Portal</h1>
+
+          
+    <h6>Username</h6>
+    <div>
+        {{ username }}
+    </div>
+    <h6>Full Name</h6>
+    <div>
+        {{ firstName }} {{ lastName }}
+    </div>     
+    <h6>Email</h6>     
+    <div>
+        {{ email }}
+    </div>
+    <h6>Address</h6>
+    <div>
+        {{ address }}
+    </div>
+    <h6>Emergency Contact</h6>
+    <div>
+        {{ emergCont }}
+    </div>
+    <h6>Emergency Contact Phone Number</h6>
+    <div>
+    {{ emergNumb }}
+    </div>
+    
+    
+    <div class = "form-meds">
+        <h3>Add Medication</h3>
+        <form method="POST" action="" novalidate style="width:45%">
+            {{ med_form.hidden_tag() }}
+            <p>
+                {{ med_form.medicine.label }} <br>
+                {{ med_form.medicine(size=32) }} <br>
+                {{ med_form.dosage.label }} <br>
+                {{ med_form.dosage(size=32) }} <br>
+                {{ med_form.frequency.label }} <br>
+                {{ med_form.frequency(size=32) }} <br>
+                {{ med_form.times.label }} <br>
+                {{ med_form.times(size=32) }} <br>
+                {{ med_form.notes.label }} <br>
+                <div style="width:250%">{{ med_form.notes(size=32)}}</div> <br>
+                {{ med_form.medSubmit() }}
+            </p>
+
+        </form>
+    </div>
+
+    <h3>Current Medications</h3>
+    <table>
+        <thead>
+            <tr>
+    
+                {% for header in headings %}  <!--Requires Jinja2 to use-->
+                    {% if header == "Dosage(mg)" %}
+                    <td style="width:5%"> {{ header }} </td>
+                    {% elif header == "Medication Name" %}
+                    <td style="width:5%"> {{ header }} </td>
+                    {% elif header == "Daily Frequency" %}
+                    <td style="width:5%"> {{ header }} </td>
+                    {% elif header == "Times" %}
+                    <td style="width:15%"> {{ header }} </td>
+                    {% elif header == "Notes" %}
+                    <td style="width:78%"> {{ header }} </td>
+                    {% endif %}
+                {% endfor%}
+                <td>Delete</td>
+            </tr>  
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>    
+                    <td
+                    onmouseover="reveal('{{row[0]}}')"
+                    onmouseout="document.getElementById('test').src='static/medications/placeholder.png';"
+                    > 
+                        {{ row[0] }} 
+                        <img src="static/medications/placeholder.png" id="test" style="position: absolute;" />
+                    </td> 
+                    <td> {{ row[1] }} </td>
+                    <td> {{ row[2] }} </td>
+                    <td> {{ row[3] }} </td>
+                    <td> {{ row[4] | safe }} </td>
+                    <td><button onclick="deleteMed('{{ row[5] }}')">del</button></td>
+                                                
+                </tr>
+            {% endfor %} 
+        </tbody>
+    </table>
+
+
+    <script>
+
+        function reveal(routeTwo) {
+
+            document.getElementById('test').src='static/medications/' + routeTwo + '.png';
+        
+        }
+
+        function deleteMed(row) {
+
+            // POST
+            fetch('/deleteMed', {
+
+                // Declare what type of data we're sending
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                // Specify the method
+                method: 'POST',
+
+                // A JSON payload
+                body: JSON.stringify(row)
+                })
+                .then(function (response) {
+                    return response.text();
+            })
+                .then(function (text) {
+
+                    console.log('POST response: ');
+
+                    // Should be 'OK' if everything was successful
+                    console.log(text);
+                });
+            
+            window.location.reload();    
+        }
+
+    </script>
+
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    <style>
+        video {
+            display: block;
+            margin: auto;
+        }
+
+        .selectclass {
+            border: 20px solid rgb(6, 207, 207);
+        }
+
+        .unselectclass {
+            border: 20px solid rgb(129, 129, 129);
+        }
+
+    </style>
+
+    
+
+    <div class="form-meds">
+        <style>
+            p {text-align: center;}
+        </style>
+        <form method="post" action="" novalidate>
+            <p>
+                Which Avatar would you like to use? <br>
+
+                <img src="{{'static/Amy.png?' + time}}" width="240" usemap="#amymap" class="unselectclass"> 
+                <img src="{{'static/Frank.png?' + time}}" width="240" usemap="#frankmap" class="unselectclass"> <br>
+                Amy &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  Frank <br>
+                <img src="{{'static/Jackie.png?' + time}}" width="240" usemap="#jackiemap" class="unselectclass"> 
+                <img src="{{'static/Kurt.png?' + time}}" width="240" usemap="#kurtmap" class="unselectclass"> <br>
+                Jackie &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  Kurt <br>
+                <img src="{{'static/generic_avatar.png?' + time}}" width="240" usemap="#uploadmap" class="unselectclass"> <br>
+
+                <map name="amymap"> 
+                    <area shape="rect" coords="0, 0, 240, 240" onclick="selectImage(0);changeAvatar('Amy')"> 
+                </map>
+                <map name="frankmap">
+                    <area shape="rect" coords="0, 0, 240, 240" onclick="selectImage(1);changeAvatar('Frank')">    
+                </map>
+                <map name="jackiemap"> 
+                    <area shape="rect" coords="0, 0, 240, 240" onclick="selectImage(2);changeAvatar('Jackie')"> 
+                </map>
+                <map name="kurtmap">
+                    <area shape="rect" coords="0, 0, 240, 240" onclick="selectImage(3);changeAvatar('Kurt')">    
+                </map>
+                <map name="uploadmap">
+                    <area shape="rect" coords="0, 0, 240, 240" onclick="selectImage(4);changeAvatar('Custom')">    
+                </map>
+
+         
+            </p>
+
+        </form>
+        
+        <form method="POST" enctype = "multipart/form-data" id = "customAvatarForm" action ="/avatarselect#">
+            {{ form.hidden_tag() }}
+            {{ form.file }}
+            {{ form.submitCustom() }}
+        </form>      
+        
+    
+
+    
+
+    <script>
+        
+        function httpGetAsync(url, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+                }
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send(null)
+        }
+        
+        function callResponse() {
+            console.log("do nothing")
+        }
+
+        const video = document.querySelector('video');
+
+        video.load();    
+        
+        video.addEventListener('canplaythrough', () => {
+            video.play();
+        });  
+
+        //const customAvatarForm = document.getElementById("customAvatarForm");
+        //const inpFile = document.getElementById("avatarImg");
+
+        //customAvatarForm.addEventListener("submit", e => {
+        //    e.preventDefault();
+        //
+        //
+        //    const endpoint = "/uploadCustomAvatar";
+        //    const formData = new FormData();
+        //    
+        //    formData.append("avatarImg", avatarImg.files[0]);
+        //    
+        //    fetch(endpoint, {
+        //        method: "POST",
+        //        body: formData
+        //    }).catch(console.error);
+        //});
+
+        video.onended = (event) => {
+            //document.querySelector(".bg-modal").style.display = 'flex';
+            //httpGetAsync('/dispensePacket', callResponse)
+            //window.location.href = "/renderAvatar/AvatarDispensed.html"
+        };
+
+        function selectImage(numb) {
+            var imgc = document.getElementsByTagName("IMG")[numb]; //Define the "correct image" the one that is clicked
+            var att = document.createAttribute("class"); //create a class attribute
+            att.value = "selectclass"; //define the created class attribute as the class titled "selectclass"
+            imgc.setAttributeNode(att); //apply the class to the correct image
+
+
+            var imageCount = 5;
+            var i;
+            for (i = 0; i < imageCount; i++) {
+                if (i != numb) {
+                    var imgw = document.getElementsByTagName("IMG")[i];
+                    var remo = document.createAttribute("class");
+                    remo.value = "unselectclass"; //define the created class attribute as the class titled "unselectclass"
+                    imgw.setAttributeNode(remo); //apply the other class to all the wrong images
+                }
+            }
+
+            
+
+        }
+
+        function changeAvatar(name) {
+            
+
+            // POST
+            fetch('/hello', {
+
+                // Declare what type of data we're sending
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                // Specify the method
+                method: 'POST',
+
+                // A JSON payload
+                body: JSON.stringify(name)
+            })
+                .then(function (response) {
+                    return response.text();
+                })
+                .then(function (text) {
+
+                    console.log('POST response: ');
+
+                    // Should be 'OK' if everything was successful
+                    console.log(text);
+                });
+        }   
+    
+        
+    </script>
+    {% endblock %}
+
+</body>
+</html>
+
+

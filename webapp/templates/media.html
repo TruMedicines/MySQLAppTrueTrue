@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    <div>
+        <blockquote class="tiktok-embed" cite= "{{cite}}" data-video-id="{{videoId}}" style="max-width: 605px;min-width: 325px;" > <section> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+    </div>
+    {% endblock %}
+</body>
+</html>
+

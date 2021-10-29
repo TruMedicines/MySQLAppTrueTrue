@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    <style>
+        video {
+            display: block;
+            margin: auto;
+        }
+    </style>
+
+    <video id="video" preload="none" width="10%" height="10%">
+        <source src={{vid}} type="video/mp4">
+    </video>
+
+    <div class="form-meds">
+        <style>
+            p {text-align: center;}
+        </style>
+
+        <form method="post" action="" novalidate>
+            {{ av_form.hidden_tag() }}
+            <p>
+                {{ av_form.text.label }} <br>
+                {{ av_form.text(size=32) }} <br>
+                
+            </p>
+                
+            <p>{{ av_form.submitAvatar() }}</p>
+    </div>
+
+    <script>
+        
+        function httpGetAsync(url, callback) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+                }
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send(null)
+        }
+        
+        function callResponse() {
+            console.log("do nothing")
+        }
+
+        const video = document.querySelector('video');
+
+        video.load();    
+        
+        video.addEventListener('canplaythrough', () => {
+            video.play();
+        });  
+
+        //const customAvatarForm = document.getElementById("customAvatarForm");
+        //const inpFile = document.getElementById("avatarImg");
+
+        //customAvatarForm.addEventListener("submit", e => {
+        //    e.preventDefault();
+        //
+        //
+        //    const endpoint = "/uploadCustomAvatar";
+        //    const formData = new FormData();
+        //    
+        //    formData.append("avatarImg", avatarImg.files[0]);
+        //    
+        //    fetch(endpoint, {
+        //        method: "POST",
+        //        body: formData
+        //    }).catch(console.error);
+        //});
+
+        video.onended = (event) => {
+            //document.querySelector(".bg-modal").style.display = 'flex';
+            //httpGetAsync('/dispensePacket', callResponse)
+            //window.location.href = "/renderAvatar/AvatarDispensed.html"
+        };
+    </script>
+
+    {% endblock %}
+</body>
+</html>

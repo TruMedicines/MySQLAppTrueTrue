@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    <div class = "box">
+        <form method="POST" action=""> 
+            {{ form.hidden_tag() }}
+            <h3>Enter Username of the Account you would like to sign into.</h3>
+            {{ form.username.label }} <br>
+            {{ form.username(size=32)}} <br>
+            {{ form.submit() }}
+        </form>
+        
+
+    </div>
+    {% endblock %}
+</body>
+</html>

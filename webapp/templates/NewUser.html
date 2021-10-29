@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    <div>
+        <form method="POST" action="/newUser" novalidate> 
+            {{ form.hidden_tag() }} <br>
+            {{ form.username.label }} <br>
+            {{ form.username(size=32) }} <br>
+            {{ form.email.label }} <br>
+            {{ form.email(size=32) }} <br>
+            {{ form.firstName.label }} <br>
+            {{ form.firstName(size=32) }} <br>
+            {{ form.lastName.label }} <br>
+            {{ form.lastName(size=32) }} <br>
+            {{ form.address.label }} <br>
+            {{ form.address(size=32) }} <br>
+            {{ form.emergencyContactName.label }} <br>
+            {{ form.emergencyContactName(size=32) }} <br>
+            {{ form.emergencyContactNumb.label }} <br>
+            {{ form.emergencyContactNumb(size=32) }} <br>
+            {{ form.submit() }}
+
+        </form>
+    </div>
+    {% endblock %}
+</body>
+</html>

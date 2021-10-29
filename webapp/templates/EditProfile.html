@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+{% extends "base.html" %}
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    {% block wrapper %}
+    <div class = "box">
+        <h3> Current Profile Picture</h2> <br>
+        <img src="{{'static/profilePic.jpg?' + time }}" width=185>
+        <h3>Want to Change Your Profile Picture?</h2>
+    <form method="POST" enctype = "multipart/form-data" id = "profilePicForm" action ="/editProfile#">
+        {{ form_upload.hidden_tag() }}
+        {{ form_upload.file  }}
+        <input onclick = "refresh(node)" type ="submit">
+    </form>
+    </div>
+    <div class = "box">
+        <div class = "form-meds">
+            <form method="POST" action="/editProfile#" novalidate>
+                {{ form_edit.hidden_tag() }}
+                <p>
+                    <h3>Fill out each field that you would like to update.</h3> <br>
+                    {{ form_edit.changeUsername.label }} <br>
+                    {{ form_edit.changeUsername(size=32) }} <br>
+                    {{ form_edit.changeEmail.label }} <br>
+                    {{ form_edit.changeEmail(size=32) }} <br>
+                    {{ form_edit.changePassword.label }} <br>
+                    {{ form_edit.changePassword(size = 32) }} <br>
+                    {{ form_edit.confirmChangePassword.label }} <br>
+                    {{ form_edit.confirmChangePassword(size = 32) }} <br>
+                    {{ form_edit.changeDoctorName.label }} <br>
+                    {{ form_edit.changeDoctorName(size = 32) }} <br>
+                    {{ form_edit.changeDoctorNumber.label }} <br>
+                    {{ form_edit.changeDoctorNumber(size = 32) }} <br>
+                    {{ form_edit.modifyMedications.label }} <br>
+                    {{ form_edit.modifyMedications(size = 32) }} <br>
+                    {{ form_edit.changeEmergencyContactName.label }} <br>
+                    {{ form_edit.changeEmergencyContactName(size = 32) }} <br>
+                    {{ form_edit.changeEmergencyContactNumb.label }} <br>
+                    {{ form_edit.changeEmergencyContactNumb(size = 32) }} <br>
+                    {{ form_edit.changeAddress.label }} <br>
+                    {{ form_edit.changeAddress(size = 32) }} <br>
+
+                    To save changes please enter your old password <br>
+                    then press submit changes <br>
+                    {{ form_edit.submitChanges() }}
+                </p>
+
+            </form>
+        </div>
+    </div>
+    <script>
+    </script>
+    {% endblock %}
+</body>
+</html>

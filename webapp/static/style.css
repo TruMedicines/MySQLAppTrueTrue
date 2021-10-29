@@ -1,0 +1,849 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;900&display=swap');
+
+/* This affects the buttons which makes them invisible which I personally do not like the style of. 
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    vertical-align: baseline;
+    background: transparent;
+}
+*/
+#parent {
+    overflow: hidden;
+}
+
+#child {
+    overflow-y: scroll;
+}
+
+h1 {
+    margin-top: 0;
+}
+
+:root {
+    --primary: #ddd;
+    --font: #333;
+    --shadow: 0 1px 5px rgba(104, 104, 104, .8);
+    --background: #FEFEFE;
+    --blue: #9FC3E5;
+    --grey: #e3e3e3;
+    --dark-grey: #c7c7c7;
+}
+
+
+body {
+    background: var(--background);
+    margin: 0px 0px !important;
+    line-height: 1.4;
+}
+
+html {
+    color: var(--font);
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
+
+.wrapper {
+    margin: 50px 70px;
+    padding-bottom: 20px;
+}
+.clock {
+    display: grid;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    text-align: center;
+    color: var(--font);
+    background-color: var(--background);
+    padding: 0px;
+}
+
+.logo {
+    position: fixed;
+    display: grid;
+    grid-column: 1/8 7/8;
+    top: 20px;
+    left: 0px;
+    width: 100%;
+    height: 50px;
+    font-size: larger;
+    padding: 0px 0px;
+    background-color: var(--background);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+    .logo a {
+        text-decoration: none;
+        text-align: center;
+        color: var(--font);
+        
+        text-transform: capitalize;
+    }
+
+/*menu bar*/
+.slide {
+    position: fixed;
+    padding: 0px 20px;
+    color: var(--font);
+    background-color: var(--background);
+}
+
+.nav {
+    height: 100%;
+    width: 0;
+    justify-content: left;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: var(--grey);
+    padding-top: 70px;
+    transition: .5s;
+    overflow-x: hidden;
+}
+
+    .nav ul {
+        padding: 0;
+    }
+
+    .nav li:hover {
+        border-left: 6px solid var(--blue);
+        background-color: var(--dark-grey);
+    }
+
+    .nav a {
+        display: block;
+        padding: 10px 30px;
+        color: #000000;
+        text-decoration: none;
+        font-size: 25px;
+    }
+
+        .nav a:hover {
+            color: #080808;
+            transition: .5s;
+        }
+
+    .nav .close {
+        position: absolute;
+        top: 0;
+        margin-left: 20px;
+        margin-top: 30px;
+        padding: 0;
+        font-size: 30px;
+    }
+
+#content {
+    transition: margin-left .5s;
+    width: 100%;
+}
+
+
+
+/*For clickable boxes on homepage*/
+.main_boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 10px;
+    text-decoration: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    align-content: center;
+    justify-content: center;
+}
+
+    .main_boxes a {
+        text-decoration: none;
+        color: #000;
+        font-size-adjust: 0.58;
+    }
+
+        .main_boxes a:hover {
+            transition: .5s;
+            text-decoration: none;
+        }
+
+.box:hover {
+    background-color: #75a9d9;
+}
+
+.box {
+    text-align: center;
+    height: 100%;
+    padding: 1rem 1rem;
+    box-shadow: var(--shadow);
+    background-color: var(--blue);
+    text-decoration: none;
+}
+
+/* previous loading page 
+.loader {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    border: 16px solid var(--grey);  Light grey
+    border-top: 16px solid var(--blue);  Blue 
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+*/
+
+/*verification of pills*/
+.verify {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    text-decoration: none;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.result_box {
+    text-align: center;
+    padding: 1.5rem 2rem;
+    background-color: #FEFEFE;
+    text-decoration: none;
+}
+
+.verify a {
+    text-decoration: none;
+    color: #000;
+}
+
+/*Contact page*/
+.form-box {
+    width: 100%;
+    padding: 50px 30%;
+    background-color: #fff;
+}
+
+    .form-box form input {
+        width: 40%;
+        height: 30px;
+        margin-bottom: 4px;
+        padding: 0px 1%;
+        border: 1px solid orange;
+        font-size: 16px;
+        color: #282828;
+        font-family: Lato;
+    }
+
+    .form-box form textarea {
+        width: 40%;
+        height: 200px;
+        margin-bottom: 4px;
+        font-size: 16px;
+        padding: 6px 1%;
+        border: 1px solid orange;
+        resize: vertical;
+    }
+
+    .form-box button {
+        width: 120px;
+        height: 30px;
+        background-color: orange;
+        border: none;
+        font-size: 16px;
+        color: #282828;
+        font-family: Lato;
+        text-transform: uppercase;
+    }
+
+/*Prescription table list*/
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 18px;
+}
+
+td, th {
+    width: 15%;
+    height: 8%;
+    text-align: center;
+    font-size: 18px;
+    padding: 10px 0px;
+    text-transform: capitalize;
+}
+
+tr:hover { 
+    background: red; 
+}
+
+td a { 
+    display: block; 
+    border: 1px solid black;
+    padding: 16px; 
+}
+
+tr:nth-child(even) {
+    background-color: var(--grey);
+}
+
+tr:nth-child(odd) {
+    background-color: var(--background);
+}
+
+th {
+    background: var(--blue);
+    border-color: var(--background);
+    font-size: 20px;
+}
+/*steve's image processing*/
+.top_box {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+    text-decoration: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+    .top_box a {
+        text-decoration: none;
+        color: #000;
+    }
+
+        .top_box a:hover {
+            transition: .5s;
+            text-decoration: none;
+        }
+
+a.buttons {
+    display: inline-block;
+    padding: 0.7em 1.4em;
+    margin: 0 0.3em 0.3em 0;
+    border-radius: 0.15em;
+    box-sizing: border-box;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #FFFFFF;
+    background-color: #3e94e6;
+    box-shadow: inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+    text-align: center;
+    position: relative;
+    justify-items: center;
+}
+
+    a.buttons:active {
+        top: 0.1em;
+    }
+
+@media all and (max-width:30em) {
+      a.buttons {
+        display: block;
+        margin: 0.4em auto;
+    }
+}
+
+/*Add Medication Page*/
+.form-new-user {
+    width: 100%;
+    padding: 20px 0;
+    background-color: #fff;
+}
+
+    .form-new-user form input {
+        width: 40%;
+        height: 30px;
+        margin-bottom: 4px;
+        padding: 0px 1%;
+        border: 1px solid var(--dark-grey);
+        font-size: 16px;
+        color: #282828;
+        font-family: Lato;
+    }
+
+    .form-new-user form textarea {
+        width: 40%;
+        height: 200px;
+        margin-bottom: 4px;
+        font-size: 16px;
+        padding: 6px 1%;
+        border: 1px solid black;
+        resize: vertical;
+    }
+
+    .form-new-user button {
+        border: none;
+        font-size: 16px;
+        font-family: Lato;
+        display: inline-block;
+        padding: 0.7em 1.4em;
+        margin: 0 0.3em 0.3em 0;
+        border-radius: 0.15em;
+        box-sizing: border-box;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 400;
+        color: #FFFFFF;
+        background-color: #3e94e6;
+        box-shadow: inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+    }
+
+        .form-new-user button:active {
+            top: 0.1em;
+        }
+
+    .form-new-user select {
+        -moz-appearance: none;
+        appearance: none;
+        /* Add some styling */
+        height: 30px;
+        margin: 5px 0px;
+        padding: 0px 10px;
+        font-size: 16px;
+        line-height: 1.75;
+        color: #333;
+        background-color: #ffffff;
+        background-image: none;
+        border: 1px solid #0ebeff;
+        -ms-word-break: normal;
+        word-break: normal;
+    }
+
+@media all and (max-width:30em) {
+      button {
+        display: block;
+        margin: 0.4em auto;
+    }
+}
+
+input[type="submit" i] {
+    appearance: push-button;
+    user-select: none;
+    white-space: pre;
+    align-items: flex-start;
+    text-align: center;
+    cursor: default;
+    color: -internal-light-dark(black, white);
+    background-color: #b3b8b3;
+    box-sizing: border-box;
+    padding: 1px 6px;
+    border-width: 2px;
+    border-style: outset;
+    border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+}
+
+.input_hidden {
+    position: absolute;
+    left: -9999px;
+}
+
+.selected {
+    background-color: #ccc;
+}
+
+#emotion label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+#emotion label img {
+    padding: 1px;
+}
+
+/*Add Medication Page*/
+.form-meds {
+    width: 100%;
+    padding: 20px 0;
+    /*background-color: #c7c7c7;*/
+}
+
+    .form-meds form input {
+        width: 40%;
+        height: 30px;
+        margin-bottom: 4px;
+        padding: 0px 1%;
+        border: 2px solid var(--dark-grey);
+        font-size: 16px;
+        color: #282828;
+        /*background-color: #3e94e6;*/
+        font-family: Lato;
+    }
+
+    .form-meds form textarea {
+        width: 40%;
+        height: 200px;
+        margin-bottom: 4px;
+        font-size: 16px;
+        padding: 6px 1%;
+        border: 1px solid black;
+        resize: vertical;
+    }
+
+    .form-meds button {
+        border: 1px;
+        font-size: 16px;
+        font-family: Lato;
+        display: inline-block;
+        padding: 0.7em 1.4em;
+        margin: 0 0.3em 0.3em 0;
+        border-radius: 0.15em;
+        box-sizing: border-box;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 400;
+        color: #FFFFFF;
+        background-color: #3e94e6;
+        box-shadow: inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+    }
+
+        .form-meds button:active {
+            top: 0.1em;
+        }
+
+@media all and (max-width:30em) {
+      button {
+        display: block;
+        margin: 0.4em auto;
+    }
+}
+
+/* IE11 hide native button (thanks Matt!) */
+select::-ms-expand {
+    display: none;
+}
+
+.select:after {
+    content: '<>';
+    font: normal normal normal 17px/1 FontAwesome;
+    color: #0ebeff;
+    right: 11px;
+    top: 6px;
+    height: 30px;
+    padding: 15px 0px 0px 8px;
+    border-left: 1px solid #0ebeff;
+    pointer-events: none;
+}
+
+.form-meds select {
+    -moz-appearance: none;
+    appearance: none;
+    height: 30px;
+    margin: 5px 0px;
+    padding: 0px 10px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #333;
+    background-color: #ffffff;
+    background-image: none;
+    border: 1px solid #0ebeff;
+    -ms-word-break: normal;
+    word-break: normal;
+}
+
+
+.bg-modal {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    position: absolute;
+    margin-left: -80px;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+.modal-content {
+    width: 200px;
+    height: 240px;
+    background-color: white;
+    border-radius: 4px;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+}
+
+.reminderBtns {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+    text-decoration: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    align-content: center;
+    justify-content: center;
+}
+
+    .reminderBtns a {
+        text-decoration: none;
+        color: #2deb2d;
+        font-size-adjust: 2.0;
+    }
+
+        .reminderBtns a:hover {
+            transition: .5s;
+            text-decoration: none;
+        }
+
+.yesPill:hover {
+    background-color: #b3b8b3;
+}
+
+.yesPill {
+    text-align: center;
+    padding: 1rem 1rem;
+    box-shadow: var(--shadow);
+    background-color: rgb(228, 222, 222);
+    text-decoration: none;
+}
+
+
+.snooze:hover {
+    background-color: #fffa00;
+}
+
+.snooze {
+    text-align: center;
+    padding: 1rem 1rem;
+    box-shadow: var(--shadow);
+    background-color: #f7f459;
+    text-decoration: none;
+}
+
+.video-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%; 
+      overflow: hidden;
+    }
+    .video-container video {
+      /* Make video to at least 100% wide and tall */
+      min-width: 100%; 
+      min-height: 100%; 
+
+      /* Center the video */
+      position: absolute;
+      top: 0%;
+      left: 0%;
+      /*transform: translate(-50%,-50%); */
+    }
+
+    /*This is for the dispense popup functionallity */
+
+    /*
+    This causes the scroll bar to be on the side of the screen permanently, 
+    otherwise the bar keeps flashing up and disappearing
+    */
+    html {
+        overflow-y: scroll;
+    }
+
+    /*
+    We move the top and left to the 50% position in the page and then use transform translate(-50%,-50%) in order to 
+    make it centered on the webpage. Scale(0) makes it so the popup isnt visible when the page loads in. Transistion 
+    ease-in-out makes it so that the popup will fade in instead of just appearing. The rest is cosmetic. 
+
+    Popup style for actual use
+    
+    .popup {
+        position: fixed;
+        top: 0%;
+        bottom: 0%;
+        left: 0%;
+        right: 0%;
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        border: 1px solid black;
+        border-radius: 10px;
+        z-index: 10;
+        background-color: rgb(255, 255, 255);
+        
+    }
+
+    */
+
+    /*Popup for testing use*/
+
+    .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%) scale(0);
+        transition: 200ms ease-in-out;
+        border: 1px solid black;
+        border-radius: 10px;
+        z-index: 10;
+        background-color: rgb(255, 255, 255);
+        width: 500px;
+        max-width: 80%;
+    }
+
+    /*
+    When the modal becomes active after pressing the open button or the time being reached
+    we fade it into view by changing the scale from 0 to 1
+    */
+    .popup.active {
+            transform: translate(-50%, -50%) scale(1); 
+        }
+
+    /*
+
+    */
+    .popup-header {
+        padding: 10px 15px;
+        display:flex;
+        justify-content: right;
+        text-align: right;
+        align-items: flex-end;
+        border-bottom: 1px solid black;
+    }
+
+    /*
+
+    */
+    .popup-header .close-button {
+        cursor: pointer;
+        border: none;
+        outline: none;
+        background: none;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    /*
+    Center the text inside of the popup
+    */
+    .popup-body {
+        padding: 10px 15px;
+        text-align: center;
+    }
+
+    /*
+    Opacity 0 makes it so the overlay isnt visible initially. The 4 directions being 0 make it so that the overlay always
+    covers the entire screen. The background color is black at half opacity. Pointer Events none prevent from triggering 
+    anything by clicking the overlay when it isnt active. 
+    */
+    #overlay {
+        position: fixed;
+        opacity: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+        transition: 200ms ease-in-out;
+    }
+
+    /*
+    When the overlay is active make it appear with opacity 1, and allow the pointer events. 
+    */
+    #overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    /*
+    When the image of the pill isnt active, have it reduced to 0% size, make its transition fade in
+    */
+    .image {
+        width: 0%;
+        height: 0%;
+        transition: 200ms ease-in-out;
+    }
+
+    /*
+    When the image is active have the image be 50% size. 
+    */
+    .image.active {
+        width: 70%;
+        transition: 200ms ease-in-out;
+    }
+
+    /*
+    The following 4 classes are repetitive, this is done to keep the buttons distinct and allow future modification
+    The general feature is to change scale when active or not active, and to have a smooth fade. 
+    */
+    .close-button {
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+        width: 40%;
+        height: 50px;
+        
+    }
+
+    .close-button.active {
+        transform: scale(1);
+        transition: 200ms ease-in-out;
+    }
+
+    .recording {
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+    }
+
+    .recording.active {
+        transform: scale(1);
+        transition: 200ms ease-in-out;
+    }
+
+    .video {
+        transform: scale(0);
+        transition: 200ms ease-in-out;
+    }
+
+    .video.active {
+        transform: scale(1);
+        transition: 200ms ease-in-out;
+    }
+
+    .loader {
+        height: 100px;
+        width: 100px;
+        border: 15px solid #45474b;
+        border-top-color: #2a88e6;
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-radius: 50%;
+    }
+
+    .loader.active {
+        animation: spin 1.5s infinite linear;
+    }
+
+    .loader.inactive {
+        transform: scale(0);
+    }
+
+    @keyframes spin{
+        100%{
+            transform: rotate(360deg);
+        }
+    }
+
+    /*
+    This is for the Data Dashboard page
+    */
+
+    .paginate_button {
+        margin: 5px;
+    }

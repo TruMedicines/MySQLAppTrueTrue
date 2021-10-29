@@ -1,0 +1,109 @@
+﻿<html>
+<head>
+    <meta charset="utf-8 without BOM">
+
+    <title>{{Title}}</title>
+    <script src="https://kit.fontawesome.com/004f417883.js" crossorigin="anonymous"></script> <!--Allows use of Font Awesome on homepage-->
+    <script src="static/script.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> <!--Used for DataDashboard-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!--Used for DataDashboard-->
+    <link href="/static/style.css? + '{{time}}"  rel="stylesheet">
+ 
+
+    <script type="text/javascript">
+        function openSlideMenu() {
+            document.getElementById('menu').style.width = '250px';
+            document.getElementById('content').style.marginLeft = '250px';
+            document.getElementById('title').style.marginLeft = '250px';
+        }
+        function closeSlideMenu() {
+            document.getElementById('menu').style.width = '0';
+            document.getElementById('content').style.marginLeft = '0';
+            document.getElementById('title').style.marginLeft = '0';
+        }
+
+        /*
+        var intervalId = setInterval(function() {
+            
+            fetch('/checkCall', {
+
+            // Declare what type of data we're sending
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            // Specify the method
+            method: 'POST',
+
+            // A JSON payload
+            body: JSON.stringify(name)
+            })
+            
+        }, 30000);
+        */
+        
+
+    </script>
+
+    {% block script %}
+    {% endblock %}
+    
+
+    </head>
+<body onload="timeClock('{{dispenseTime}}')">
+    <div id="content">
+
+        <div class="logo">
+            <a href="#" onclick="openSlideMenu()">
+                <div class="slide">
+
+                    <i class="fas fa-bars fa-2x"></i>
+                </div>
+            </a>
+
+            <div id="menu" class="nav">
+                <a href="#" class="close" onclick="closeSlideMenu()">
+                    <i class="fas fa-times"></i>
+                </a>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/user">Profile</a></li>
+                    <li><a href="/selectAvatar">Change Avatar</a></li>
+                    <li><a href="/adminPortal">Admin Portal</a></li>
+                    <li><a href="#">Call Physician</a></li>
+                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/newUser">Sign Up</a></li>
+
+                </ul>
+            </div>
+            <a href="/" id="title">
+                <h3 stlye="font-size:20px;">{{title}}</h3>
+            </a>
+        </div>
+
+        <div class="clock">
+            <body onload="digit()">
+                <p id="tt">
+                </p>
+            </body>
+        </div>
+        
+        <script src="/static/js/popupmsgs.js"></script>
+
+        <div class="wrapper">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}"> 
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block wrapper %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+  <title>{{ title }}</title>
+</head>
+
+<body>
+  <h1>Pill Dispenser Demo Page</h1>
+  <h2> {{ header }} </h2>
+  <h3> {{ text }} </h3>
+  <h3> Current time: {{ curtime }} </h3>
+  <h3> Next dispense time: {{ nextime }} </h3>
+  <br>
+  <img src="{{'static/pillPic.jpg?v='+time}}" width="400" class="img">
+  <br>
+  <a href="/fillDeque"><button>Prepare Next Packet</button></a>
+  <a href="/printPacketInfo"><button>Next Packet Info</button></a>
+  <a href="/dispensePacket"><button>Dispense Next Packet</button></a>
+  <a href="/lowerServo"><button>Lower Servo</button></a>
+  <a href="/pictureTakin"><button>Take Photos</button></a>
+  
+</body>
+
+<script>
+  function refresh(node)
+  {
+    var times = 1000; //Time between image checks
+
+    (function startRefresh()
+    {
+      var address;
+      if(node.src.infexOf('?')>-1)
+        address = node.src.split('?')[0];
+      else 
+        address = node.src;
+
+      node.src = address+"?time="+new Date().getTime();
+
+      setTimeout(startRefresh,times);
+    })();
+
+  }
+
+  window.onload = function()
+  {
+    var node = document.getElementsByClassName("img");
+    refresh(node);
+  }
+</script>
+</html>

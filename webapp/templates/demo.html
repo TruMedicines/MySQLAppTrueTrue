@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style> 
+
+        /*
+        This causes the scroll bar to be on the side of the screen permanently, 
+        otherwise the bar keeps flashing up and disappearing
+        */
+        html {
+            overflow-y: scroll;
+        }
+
+        /*
+        We move the top and left to the 50% position in the page and then use transform translate(-50%,-50%) in order to 
+        make it centered on the webpage. Scale(0) makes it so the modal isnt visible when the page loads in. Transistion 
+        ease-in-out makes it so that the modal will fade in instead of just appearing. The rest is cosmetic. 
+        */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%) scale(0);
+            transition: 200ms ease-in-out;
+            border: 1px solid black;
+            border-radius: 10px;
+            z-index: 10;
+            background-color: white;
+            width: 500px;
+            max-width: 80%;
+        }
+
+        /*
+        When the modal becomes active after pressing the open button or the time being reached
+        we fade it into view by changing the scale from 0 to 1
+        */
+        .modal.active {
+            transform: translate(-50%,-50%) scale(1); 
+        }
+
+        /*
+
+        */
+        .modal-header {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid black;
+        }
+
+        /*
+
+        */
+        .modal-header .title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        /*
+
+        */
+        .modal-header .close-button {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: none;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        /*
+        Center the text inside of the modal
+        */
+        .modal-body {
+            padding: 10px 15px;
+            text-align: center;
+        }
+
+        /*
+        Opacity 0 makes it so the overlay isnt visible initially. The 4 directions being 0 make it so that the overlay always
+        covers the entire screen. The background color is black at half opacity. Pointer Events none prevent from triggering 
+        anything by clicking the overlay when it isnt active. 
+        */
+        #overlay {
+            position: fixed;
+            opacity: 0;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, .5);
+            pointer-events: none;
+            transition: 200ms ease-in-out;
+        }
+
+        /*
+        When the overlay is active make it appear with opacity 1, and allow the pointer events. 
+        */
+        #overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /*
+        When the image of the pill isnt active, have it reduced to 0% size, make its transition fade in
+        */
+        .image {
+            width: 0%;
+            height: 0%;
+            transition: 200ms ease-in-out;
+        }
+
+        /*
+        When the image is active have the image be 50% size. 
+        */
+        .image.active {
+            width: 50%;
+            height: 50%;
+            transition: 200ms ease-in-out;
+        }
+
+        /*
+        The following 4 classes are repetitive, this is done to keep the buttons distinct and allow future modification
+        The general feature is to change scale when active or not active, and to have a smooth fade. 
+        */
+        .close-button {
+            transform: scale(0);
+            transition: 200ms ease-in-out;
+        }
+
+        .close-button.active {
+            transform: scale(1);
+            transition: 200ms ease-in-out;
+        }
+
+        .recording {
+            transform: scale(0);
+            transition: 200ms ease-in-out;
+        }
+
+        .recording.active {
+            transform: scale(1);
+            transition: 200ms ease-in-out;
+        }
+
+        .video {
+            transform: scale(0);
+            transition: 200ms ease-in-out;
+        }
+
+        .video.active {
+            transform: scale(1);
+            transition: 200ms ease-in-out;
+        }
+
+        .loader {
+            height: 100px;
+            width: 100px;
+            border: 15px solid #45474b;
+            border-top-color: #2a88e6;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-radius: 50%;
+        }
+
+        .loader.active {
+            animation: spin 1.5s infinite linear;
+        }
+
+        .loader.inactive {
+            transform: scale(0);
+        }
+
+        @keyframes spin{
+            100%{
+                transform: rotate(360deg);
+            }
+        }
+
+    </style>
+</head>
+
+<!--When the page has loaded pass in the time that the pills should be dispensed at to the timeClock() function-->
+<body onload="timeClock('{{loadTime}}')"> 
+    <div class="main-container">
+        <h1>Tele Pack Live Demonstration</h1>
+
+        <!--Create an empty div for the clock that will be populated when the timeClock() function runs-->
+        <div id='clock' style="font-size: 40px"></div> 
+                                                        
+        <!--Display the time for the medications to be dispensed-->
+        <div id='dispenseTime' style="font-size: 40px"> Next Dispense Time = {{loadTime}} </div> 
+
+        <!--This is the button that opens the modal for testing-->
+        <button data-modal-target="#modal">Open Modal</button> 
+
+        <!--This is the div for modal-->
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <div class="title">Avatar</div>
+
+                <!--this is a button that closes the modal &times; is the code for the x symbol -->
+                <div data-close-button class="close-button active">&times;</div>
+            </div>
+            <div class="modal-body">
+                Ready to Take Your Medications? <br>
+
+                
+                <div class="loader inactive" id="loader"></div>
+                <!--The video poster is the static image of the avatar Amy. Currently this is static,-->
+                <!--but should be used based on the avatar for the given user-->
+                <video id="video" class="video active" poster="/static/Amy.png" preload="none" width="50%" height="50%">
+                    <!--This is the demovideo which is paused until the modal opens-->
+                    <source src="/static/demovid.mp4" type="video/mp4"> 
+                </video>
+                
+                <br>
+                <!--This is the image of the pill pack to be viewed by the user, it is initially hidden-->
+                <img id="pill" class="image" src="{{ 'static/pillPic.jpg?' + time }}" width="50%" height="50%"> 
+                <br>
+                <!--This is the confirmation button, for the user to confirm they want their pills dispensed-->
+                <!--Once pressed the machine will analyze the packs-->
+                <button confirmation-button id="confirm" class="close-button active">Yes</button>
+                <!--This is the deny confirmation button, for the user to say they dont want their pills dispensed-->
+                <!--If pressed it will just hide the yes and no buttons but not do anything else-->
+                <button confirmation-button id="deny" class="close-button active">No</button>
+                
+                <br>
+
+                <!--This is the dispense button, for the user to confirm that their pills look correct-->
+                <!--Once pressed this button will dispense the pack-->
+                <button dispense-button id="dispense" class="close-button">Dispense</button>
+                <!--This is the dont dispense button, for the user to say that their pills dont look correct-->
+                <!--If pressed it will(Needs development)-->
+                <button dispense-button id="dontDispense" class="close-button">Don't Dispense</button>
+            </div>
+        </div>
+
+        <!--This is the overlay that will darken the background when the modal is active-->
+        <div id="overlay"></div> 
+        <br>
+        <!--This is the recording of the user taking their medication which will show after everything else has finished-->
+        <video class="recording" id="recording" width="100%">
+            <source src="{{ '/static/webcam.mp4?' + time }}" type="video/mp4">
+        </video>
+    </div>
+
+    <script>
+
+        //Define the avatar video, and the recording of the user as constants. 
+        const video = document.getElementById('video');
+        const recording = document.getElementById('recording')
+
+        //Load the video but don't begin playing it yet
+        video.load();
+
+        //Define all the button that open the modal as constants
+        const openModalButtons = document.querySelectorAll('[data-modal-target]')
+
+        //Define all the buttons that close the modal as constants
+        const closeModalButtons = document.querySelectorAll('[data-close-button]')
+
+        //Define the button that confirms the user is ready to have their pills dispensed as constants
+        const confirmationButtons = document.querySelectorAll('[confirmation-button]')
+
+        //Define the button that will dispense the pack and confirm that it looks good as constants
+        const dispenseButtons = document.querySelectorAll('[dispense-button]')
+
+        //Define the overlay as a constant
+        const overlay = document.getElementById('overlay')
+
+        //Define the notification sound as a constant
+        const music = new Audio('/static/pristine.mp3')
+
+        //Define the picture of the pill as a constant
+        const pic = document.getElementById('pill')
+
+        //Define the yes button as a constant
+        const yesButton = document.getElementById('confirm')
+
+        //Define the no button as a constant
+        const noButton = document.getElementById('deny')
+
+        //Define the dispense button as a constant
+        const dispense = document.getElementById('dispense')
+        
+        //Define the dont dispense button as a constant
+        const dontDispense = document.getElementById('dontDispense')
+
+        const loader = document.getElementById('loader')
+        
+
+        //When an openModalButton is clicked, find the modal/define it. And then run openModal() on it
+        //Open modal will bring it up, and darken the background
+        openModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = document.querySelector(button.dataset.modalTarget)
+                openModal(modal)
+            })
+        })
+
+        //When a closeModalButton is clicked, find the closest modal and then close it
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal')
+                closeModal(modal)
+            })
+        })
+
+        //When the yes button is clicked, run the changeVideo() function and then make the yes and no buttons disappear. 
+        yesButton.addEventListener('click', () => {
+            changeVideo()
+            removeActive(yesButton)
+            removeActive(noButton)
+        })
+
+        //When the no button is clicked make the yes and no buttons disappear. 
+        noButton.addEventListener('click', () => {
+            removeActive(yesButton)
+            removeActive(noButton)
+        })
+
+        //When the dispense button is clicked, make the dispense button, don't dispense button, and pack image disappear.
+        //Then run dispensePack() for the modal
+        dispense.addEventListener('click', () => {
+            dispense.classList.remove('active')
+            dontDispense.classList.remove('active')
+            pic.classList.remove('active')
+            const modal = dispense.closest('.modal')
+            dispensePack(modal)
+            
+        })
+
+
+        //When the overlay is clicked, is the modal is active close it
+        overlay.addEventListener('click', () => {
+            const modals = document.querySelectorAll('.modal.active')
+            modals.forEach(modal => {
+                closeModal(modal)
+            })
+        })
+
+
+        //this is the function that displays the current time
+        function timeClock(loadTime){
+            //create a new Date
+            var rtClock = new Date();
+
+            //get the hours, minutes, and secodns for the time
+            var hours = rtClock.getHours();
+            var minutes = rtClock.getMinutes();
+            var seconds = rtClock.getSeconds();
+
+            //if the hours are less than 12 make it so that it is AM. If the hours are 12 or greater make it so that it is PM
+            var amPm = (hours < 12 ) ? "AM" : "PM" ;
+
+            //if the hours are greater than 12 subtract 12 from it to get it out of military time
+            hours = (hours > 12) ? hours - 12 : hours;
+
+            //add leading zeros to hours, minutes, and seconds to get them to 2 units
+            hours = ("0" + hours).slice(-2);
+            minutes = ("0" + minutes).slice(-2);
+            seconds = ("0" + seconds).slice(-2); 
+
+            //finally concatonate all the times together into 1 string
+            var time = hours + ":" + minutes + ":" + seconds;
+
+            //Once the time string has been made place the string inside of the Clock element. 
+            document.getElementById('clock').innerHTML = time + " " + amPm;
+        
+            //setTimeout will repeatedly run the timeClock() function every 500 ms. Which is the current function.
+            //Only if the loadTime equals the current time will the function stop running, and then the modal will be opened. 
+            var t = setTimeout(function() { timeClock(loadTime)}, 500); //code was var t = setTimeout(timeclock, 500) but this 
+            // doesn't allow for the passing of the loadTime parameter. By writing it as it is, we can pass the parameter
+
+
+            if(loadTime == time) {
+                //The clock will stop updating once the current time equals the load time
+                clearTimeout(t);
+                var modal = document.getElementById('modal');
+                openModal(modal);
+            }
+            
+        }
+
+        //openModal() will bring up the modal and begin the video process
+        function openModal(modal) {
+            if (modal == null) return //If the function happens to have no modal passed to it, return out of the function
+            playNotification(); //Play the notifcation noise to alert the user that a pill is being dispensed
+            modal.classList.add('active') //Add the active class to the modal, which will pull it up
+            overlay.classList.add('active') //Add the active class to the overlay, which will darken out the background 
+            video.play(); //Begin playing the video once the modal is open
+            checkTime(video, 1); //After the first message in the video has played, pause the video
+        }
+
+        //closeModal() will close the modal and remove the dark overlay
+        function closeModal(modal) {
+            if (modal == null) return //If the function happens to have no modal passed to it, return out of the function
+            modal.classList.remove('active') //Remove the active class from the modal, which will hide it
+            overlay.classList.remove('active') //Remove the active class from the overlay, which will hide it
+        }
+
+        //playNotification() will play the notification noise
+        function playNotification() {
+            music.play()
+        }
+
+        //general remove active function
+        function removeActive(object) {
+            object.classList.remove('active')
+        }
+
+        //general add active function
+        function addActive(object) {
+            object.classList.add('active')
+        }
+
+        //changeVideo() will hide the confirm button and then resume the video
+        function changeVideo() {
+            var video = document.getElementById('video')
+            video.play(); //resume playing the video
+            checkTime(video, 2); //pause the video after the second message has played
+
+            //Fetch calls a python function while keeping the website on the same page, and let javascript run
+            //This fetches the viewNextPacket route which will run the dispenser.anaylzeNextPacket code
+            fetch('/viewNextPacket', {
+
+            // Declare what type of data we're sending
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            // Specify the method
+            method: 'POST',
+
+            // A JSON payload with a message that will be printed
+            body: JSON.stringify("Testing")
+            })
+            .then(function () { //after the return has been recieved from the python route
+                playNotification(); //play the notification sound 
+                pic.src = pic.src.split("?")[0] + "?" + new Date().getTime();
+                pic.classList.add('active') //add the active class to the picture of the pill to bring up the photo
+                video.play(); //resume the video asking the user if the pill looks correct
+                video.classList.add("active")
+                loader.classList.add("inactive")
+                loader.classList.remove("active")
+                checkTime(video,3); //pause the video once the 3rd message has been played
+                dispense.classList.add('active') //add the active class to the dispense button to bring it up
+                dontDispense.classList.add('active') //add the active class to the donDispense button to pull it up
+            })
+
+        }
+
+        //checktime() will check what time the video is currently at, and determine whether it should pause it or not, based
+        //on what message is being played
+        function checkTime(video, count) {
+            if (count == 1) {
+                if (video.currentTime >= 6.8) { //6.8 seconds is the end of the first message
+                    video.pause();
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 2) {
+                if (video.currentTime >= 9.25) { //9.25 seconds is the end of the second message
+                    video.pause();
+                    video.classList.remove("active")
+                    loader.classList.add("active")
+                    loader.classList.remove("inactive")
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 3) {
+                if (video.currentTime >= 11) { //11 seconds is the end of the third message
+                    video.pause();
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 4) {
+                if (video.currentTime >= 14) { //14 seconds is the end of the forth message
+                    video.pause();
+                    video.classList.remove("active")
+                    loader.classList.add("active")
+                    loader.classList.remove("inactive")
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            } else if (count == 5) {
+                if (video.currentTime >= 16.5) { //16.5 seconds is the end of the fifth message
+                    video.pause();
+                    video.classList.remove("active")
+                    loader.classList.add("active")
+                    loader.classList.remove("inactive")
+                } else {
+                    setTimeout(function() { checkTime(video, count)}, 250)
+                } 
+            }
+            
+        }
+
+        function dispensePack(modal) {
+            var vid = document.getElementById('video');
+            vid.play();
+            checkTime(vid, 4);
+
+            fetch('/dispenseDemo', {
+
+            // Declare what type of data we're sending
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            // Specify the method
+            method: 'POST',
+
+            // A JSON payload
+            body: JSON.stringify("Dispense")
+            })
+            .then(function () {
+                video.classList.add("active")
+                loader.classList.add("inactive")
+                loader.classList.remove("active")
+                vid.play();
+                checkTime(vid, 5);
+                fetch('/record', {
+
+                // Declare what type of data we're sending
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                // Specify the method
+                method: 'POST',
+
+                // A JSON payload
+                body: JSON.stringify("Record")
+                })
+                .then(function () {
+                    video.classList.add("active")
+                    loader.classList.add("inactive")
+                    loader.classList.remove("active")
+                    vid.play();
+                    setTimeout(function() { closeModal(modal)}, 7000);
+                    addActive(recording);
+                    recording.load();
+                    recording.play();
+                })
+                
+                
+            })
+        }
+        
+    </script>
+</body>
+
+</html>
