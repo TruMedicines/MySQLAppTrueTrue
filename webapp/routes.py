@@ -357,7 +357,6 @@ def adminPortal(user_id):
     call_form = CallForm()
     dayTime = datetime.now()
     nowTime = dayTime.strftime("%X, %Y")
-
     cur = db.connection.cursor()
 
     cur.execute('''SELECT * FROM `Users` WHERE `user_id` = '''+ str(user_id) +'''''')

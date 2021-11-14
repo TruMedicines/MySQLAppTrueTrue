@@ -12,11 +12,9 @@
     <div style="float:right; width:50%"> 
 
         <div style="width: 450px; font-size: 20px;">Patient Profile Picture:<span style="display:inline-block; width: 65px;"></span>Avatar:</div>
-        <img src="{{ 'static/oldLady.jpg?' + time }}" alt="Profile Pic Of User" height=200px> <span style="display:inline-block; width: 50px;"></span>
-        <img src="{{'file:/home/pi/MySQLApp/static/' + avatar + '.png'}}" alt="Picture of Avatar" height=200px> <br>
-        <img src="https://api.time.com/wp-content/uploads/2021/06/Pills.jpg" alt="Picture of Avatar" height=200px> <br>
+        <img src="{{ '/static/profilePic.jpg' }}" alt="Profile Pic Of User" height=200px> <span style="display:inline-block; width: 50px;"></span>
+        <img src="{{'/static/' + avatar + '.png'}}" alt="Picture of Avatar" height=200px> <br>
 
-        
         <div style="width: 450px; font-size: 16px;">Current Patient: {{ firstName }} {{ lastName }}<span style="display:inline-block; width: 65px;"></span>Avatar Name: {{ avatar }}</div>
         
         {{ call_form.hidden_tag() }}
