@@ -6,7 +6,7 @@
 cd /
 cd /home/pi/MySQLAppTrueTrue 
 sudo /home/pi/.virtualenvs/tm/bin/python /home/pi/MySQLAppTrueTrue/main.py
-#chromium-browser --start-fullscreen https://www.google.com/
+chromium-browser --start-fullscreen https://www.google.com/
 #sudo chromium-browser --start-fullscreen 127.0.0.1:5000
 #su - pi -c /usr/bin/chromium-browser --start-fullscreen 127.0.0.1:5000
 #su - pi -c "/usr/bin/chromium-browser --start-fullscreen 127.0.0.1:5000"

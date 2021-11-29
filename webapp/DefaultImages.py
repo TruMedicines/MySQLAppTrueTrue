@@ -17,10 +17,10 @@ class DefaultImages():
         self.character = character #avatar name
         self.client = Algorithmia.client(access) #access to algorithmia
         #self.final_output = output #location on algorithmia
-        self.prev_amy = 'webapp/static/Amy.png' #local location (so it can be deleted)
-        self.prev_frank = 'webapp/static/Frank.png' #local location (so it can be deleted)
-        self.prev_jackie = 'webapp/static/Jackie.png' #local location (so it can be deleted)
-        self.prev_kurt = 'webapp/static/Kurt.png' #local location (so it can be deleted)
+        self.prev_amy = '/home/pi/MySQLAppTrueTrue/webapp/static/Amy.png' #local location (so it can be deleted)
+        self.prev_frank = '/home/pi/MySQLAppTrueTrue/webapp/static/Frank.png' #local location (so it can be deleted)
+        self.prev_jackie = '/home/pi/MySQLAppTrueTrue/webapp/static/Jackie.png' #local location (so it can be deleted)
+        self.prev_kurt = '/home/pi/MySQLAppTrueTrue/webapp/static/Kurt.png' #local location (so it can be deleted)
 
         self.update(amyImage, frankImage, jackieImage, kurtImage)
 
@@ -40,10 +40,10 @@ class DefaultImages():
         fileJackie = self.client.file(jackieImage).getFile()
         fileKurt = self.client.file(kurtImage).getFile()
         #defines locations for the new images that will be downloaded
-        locationAmy = 'webapp/static/Amy.png'
-        locationFrank = 'webapp/static/Frank.png'
-        locationJackie = 'webapp/static/Jackie.png'
-        locationKurt = 'webapp/static/Kurt.png'
+        locationAmy = '/home/pi/MySQLAppTrueTrue/webapp/static/Amy.png'
+        locationFrank = '/home/pi/MySQLAppTrueTrue/webapp/static/Frank.png'
+        locationJackie = '/home/pi/MySQLAppTrueTrue/webapp/static/Jackie.png'
+        locationKurt = '/home/pi/MySQLAppTrueTrue/webapp/static/Kurt.png'
         #copy the images from aws to the local location in static
         shutil.copyfile(fileAmy.name,locationAmy)
         shutil.copyfile(fileFrank.name,locationFrank)
